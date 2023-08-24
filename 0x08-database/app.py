@@ -10,16 +10,19 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 
 db = SQLAlchemy(app)
 
-#Models definition
+#Models definition one to many relationship
 class Roles(db.Model):
-    __tablename__ = 'Roles'
+    __tablename__ = 'roles'
     id = Column(Integer, primary_key=True)
-    name = Column(String(64), unique=True)
+    name = Column(String(128), nullable=False)
+    
+    users = db.relationship('User', backref='role')
 
 class User(db.Model):
-    __tablename__ = 'Users'
+    __tablename__ = 'users'
     id = Column(Integer, primary_key=True)
-    username = Column(String(64), index=True, unique=True)
+    username = Column(String(128), nullable=False)
+    role_id = Column(Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
         return '<User %s>' % self.username
